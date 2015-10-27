@@ -19,8 +19,8 @@ Image Rendering slider
   Installation
   ------------
 
-  Please see the file SipuInteractive.js copy your source folder and load html (ex. 
-    \<script src="SipuInteractive.js"\>\</script\>
+  Please see the file SipuInteractive.js copy your source folder and load 
+  html (ex. \<script src="SipuInteractive.js"\>\</script\>
 
   Use 
   ------------
