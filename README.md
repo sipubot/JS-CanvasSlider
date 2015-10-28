@@ -1,4 +1,4 @@
-# Canvas-slider
+# JS-CanvasSlider
 Image Rendering slider
 
 
