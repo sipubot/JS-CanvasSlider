@@ -22,7 +22,7 @@ var SIPU = (function(SIPU, $, undefined) {
 	function loadImage(imgsrc) {
 		var images = [];
 		var count = 0;
-		$.each (imgsrc,function (index) {
+		$.each(imgsrc,function (index) {
 			var imageObj = new Image();
 			imageObj.onload = function () {
 				images.push(imageObj);
@@ -39,7 +39,7 @@ var SIPU = (function(SIPU, $, undefined) {
 			var chimg = $(imgList[index].node).children("img");
 			var chimglist = [];
 			$.each(chimg,function() {
-				chimglist.push($(this).attr("src"));
+				chimglist.push(this.getAttribute("src"));
 			});
 			imgs.push(loadImage(chimglist));
 		});
@@ -48,10 +48,11 @@ var SIPU = (function(SIPU, $, undefined) {
 
 	function do_input_event (ran, can, iamgelist) {
 		$.each(ran,function (index) {
+			ran[index].node.value = 1;
+			ran[index].node.setAttribute("min","1");
+			ran[index].node.setAttribute("max","255");
 			$(ran[index].node).on("change mousemove input", function () {
-				$(this).attr("min","1");
-				$(this).attr("max","255");
-				do_canvas_event(can[index].node, iamgelist[index], $(this).val());
+				do_canvas_event(can[index].node, iamgelist[index], this.value);
 			});
 		});
 	}
@@ -67,16 +68,18 @@ var SIPU = (function(SIPU, $, undefined) {
 		ctx.globalAlpha = sqfl;
 	}
 
-	function do_play_button(ran, can, img) {
-		$.each(ran,function (index) {
-			var i = $(ran[index].node).val();
-			var max = $(ran[index].node).attr("max");
-			var timerId = setInterval(function () {
-				ran[index].node.value = i;
-				do_canvas_event(can[index].node, img[index], i);
-				if (i === max) { clearInterval(timerId); }
-				i++;
-			} ,30);
+	function do_play_button(ran, can, img, but) {
+		$.each(but,function (index) {
+			$(but[index].node).click(function (){
+				var i = $(ran[index].node).val();
+				var max = $(ran[index].node).attr("max");
+				var timerId = setInterval(function () {
+					ran[index].node.value = i;
+					do_canvas_event(can[index].node, img[index], i);
+					if (i === max) { clearInterval(timerId); }
+					i++;
+				} ,100);
+			});
 		});
 	}
 
@@ -84,8 +87,10 @@ var SIPU = (function(SIPU, $, undefined) {
 		var image_list = getimagelist(getSelector("timelapse","DL"));
 		var input_range_list = getSelector("timelapse","INPUT");
 		var canvas_list = getSelector("timelapse","CANVAS");
+		var button_list = getSelector("timelapse","BUTTON");
 
 		do_input_event(input_range_list, canvas_list, image_list);
+		do_play_button(input_range_list, canvas_list, image_list, button_list);
 	};
 	return SIPU;
 })(window.SIPU || {}, jQuery);
