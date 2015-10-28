@@ -2,7 +2,7 @@
 Image Rendering slider
 
 
-                                           Js Tools
+                                           Js Slider Tools
 
   What is it?
   -----------
@@ -33,6 +33,7 @@ Image Rendering slider
          <img src="img/4.png"/>
       </dl>
       <input type="range" SIPU-INTERACTIVE="timelapse"/>
+      <button type="button" SIPU-INTERACTIVE="timelapse">play</button>
       <canvas SIPU-INTERACTIVE="timelapse"></canvas>
 
 
