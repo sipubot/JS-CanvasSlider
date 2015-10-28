@@ -13,7 +13,7 @@ Image Rendering slider
   ------------------
 
   Details of the latest version can be found on the 
-  https://github.com/sipubot/Canvas-slider/
+  https://github.com/sipubot/JS-CanvasSlider/
 
   
   Installation
