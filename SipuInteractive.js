@@ -6,11 +6,19 @@ var SIPU = (function(SIPU, $, undefined) {
 		this.active = false;
 	};
 
-	function getSelector(val, tag) {
+	var getJson = function (filename) {
+		this.content = {};
+		$.getJSON(filename, function(data){
+			content = data;
+		});
+		return content;
+	};
+
+	function getSelector(val) {
 		var temp = [];
 		var node = document.getElementsByTagName("*");
 		for (var i = 0; i < node.length ; i++ ) {
-			if (node[i].getAttribute("SIPU-INTERACTIVE") === val && node[i].tagName === tag) {
+			if (node[i].getAttribute("sipu-interactive") === val) {
 				var a = new Selector();
 				a.node = node[i];
 				temp.push(a);
@@ -19,78 +27,73 @@ var SIPU = (function(SIPU, $, undefined) {
 		return temp;
 	}
 
-	function loadImage(imgsrc) {
-		var images = [];
-		var count = 0;
-		$.each(imgsrc,function (index) {
-			var imageObj = new Image();
-			imageObj.onload = function () {
-				images.push(imageObj);
-			};
-			imageObj.src = imgsrc[index];
-		});
-		return images;
+	function getMenuButton(name) {
+
+
 	}
 
-	function getimagelist(imgList) {
-		var imgs = [];
-		$.each(imgList,function (index){
-			$(imgList[index].node).hide();
-			var chimg = $(imgList[index].node).children("img");
-			var chimglist = [];
-			$.each(chimg,function() {
-				chimglist.push(this.getAttribute("src"));
-			});
-			imgs.push(loadImage(chimglist));
-		});
-		return imgs;
-	}
-
-	function do_input_event (ran, can, iamgelist) {
-		$.each(ran,function (index) {
-			ran[index].node.value = 1;
-			ran[index].node.setAttribute("min","1");
-			ran[index].node.setAttribute("max","255");
-			$(ran[index].node).on("change mousemove input", function () {
-				do_canvas_event(can[index].node, iamgelist[index], this.value);
+	function setSlider(nodename, postWidth) {
+		//너비에 맞게.
+		var a = getSelector(nodename);
+		var al = 0;
+		$.each(a,function(index){
+			var chi = $(a[index].node).children();
+			al = Math.floor(postWidth / chi.length);
+			$.each(chi,function(idx) {
+				$(chi[idx]).css("width",al+"px");
 			});
 		});
 	}
 
-	function do_canvas_event (can, img, val) {
-		var ctx = can.getContext("2d");
-		var sq = Math.ceil( val / (255 / (img.length - 1)));
-		var sqfl = Math.ceil(val / (255 / (img.length - 1))) - (val / (255 / (img.length - 1)));
-
-		ctx.drawImage(img[sq-1],0,0);
-		ctx.globalAlpha = 1-sqfl;
-		ctx.drawImage(img[sq],0,0);
-		ctx.globalAlpha = sqfl;
+	function choicSlider(nodename, postWidth, setWidth, indexChapter, indexNode) {
+		//너비에 맞게.
+		var a = getSelector(nodename);
+		var al = 0;
+		var chi = $(a[indexChapter].node).children();
+		al = Math.floor((postWidth - setWidth) / (chi.length - 1));
+		$.each(chi,function(idx) {
+			if (idx === indexNode) {
+				$(chi[idx]).css("width",setWidth+"px");
+			} else {
+				$(chi[idx]).css("width",al+"px");
+			}
+		});
 	}
 
-	function do_play_button(ran, can, img, but) {
-		$.each(but,function (index) {
-			$(but[index].node).click(function (){
-				var i = $(ran[index].node).val();
-				var max = $(ran[index].node).attr("max");
-				var timerId = setInterval(function () {
-					ran[index].node.value = i;
-					do_canvas_event(can[index].node, img[index], i);
-					if (i === max) { clearInterval(timerId); }
-					i++;
-				} ,100);
+	function clickSlider(nodename, postWidth, setWidth) {
+		var a = getSelector(nodename);
+		$.each(a,function(index){
+			var chi = $(a[index].node).children();
+			$.each(chi,function(idx) {
+				$(chi[idx]).click(function () {
+					console.log(index);
+					console.log(idx);
+					choicSlider();
+					choicSlider("article", postWidth, setWidth, index, idx);
+				});
 			});
+		});
+	}
+
+
+	function setAnimate(node, time) {
+		$(node).css("-webkit-transition","all "+time+"s ease-in-out");
+		$(node).css("-moz-transition","all "+time+"s ease-in-out");
+		$(node).css("-o-transition","all "+time+"s ease-in-out");
+		$(node).css("transition","all "+time+"s ease-in-out");
+	}
+
+	function setAnimateNode() {
+		var nodes = getSelector("slide");
+		$.each(nodes, function (index){
+			setAnimate(nodes[index].node,"0.5");
 		});
 	}
 
 	SIPU.run = function () {
-		var image_list = getimagelist(getSelector("timelapse","DL"));
-		var input_range_list = getSelector("timelapse","INPUT");
-		var canvas_list = getSelector("timelapse","CANVAS");
-		var button_list = getSelector("timelapse","BUTTON");
-
-		do_input_event(input_range_list, canvas_list, image_list);
-		do_play_button(input_range_list, canvas_list, image_list, button_list);
+		clickSlider("article");
+		setSlider("article", 1200);
+		choicSlider("article", 1200, 640, 2, 1);
 	};
 	return SIPU;
 })(window.SIPU || {}, jQuery);
