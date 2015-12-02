@@ -36,7 +36,10 @@ Image Rendering slider
       <button type="button" SIPU-INTERACTIVE="timelapse">play</button>
       <canvas SIPU-INTERACTIVE="timelapse"></canvas>
 
-
+  Example
+  ---------
+  http://interactive.hankookilbo.com/v/9f3855acfb184462b219bcdaa2a99097/
+  
   Licensing
   ---------
 
