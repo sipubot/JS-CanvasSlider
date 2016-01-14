@@ -18,7 +18,7 @@ var SIPU = (function(SIPU, $, undefined) {
 		var temp = [];
 		var node = document.getElementsByTagName("*");
 		for (var i = 0; i < node.length ; i++ ) {
-			if (node[i].getAttribute("sipu-interactive") === val) {
+			if (node[i].getAttribute("data-sipu-interactive") === val) {
 				var a = new Selector();
 				a.node = node[i];
 				temp.push(a);
@@ -66,7 +66,10 @@ var SIPU = (function(SIPU, $, undefined) {
 			var chi = $(a[index].node).children();
 			$.each(chi,function(idx) {
 				$(chi[idx]).click(function () {
+<<<<<<< HEAD
 					choicSlider();
+=======
+>>>>>>> origin/master
 					choicSlider("article", postWidth, setWidth, index, idx);
 				});
 			});
