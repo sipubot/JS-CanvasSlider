@@ -66,10 +66,6 @@ var SIPU = (function(SIPU, $, undefined) {
 			var chi = $(a[index].node).children();
 			$.each(chi,function(idx) {
 				$(chi[idx]).click(function () {
-<<<<<<< HEAD
-					choicSlider();
-=======
->>>>>>> origin/master
 					choicSlider("article", postWidth, setWidth, index, idx);
 				});
 			});
