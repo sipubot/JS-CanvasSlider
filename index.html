@@ -2,21 +2,20 @@
 <html>
   <head>
     <title>test html</title>
-    <link rel="stylesheet" type="text/css" href="index.css">
     <script src="jquery.min.js"></script>
   </head>
 
   <body>
-    <dl data-sipu-interactive="timelapse">
+    <div data-sipu-images="timelapse">
       <img src="img/1.png" />
       <img src="img/2.png" />
       <img src="img/3.png" />
-      <img src="img/4.png" />
-    </dl>
-    <input type="range" data-sipu-interactive="timelapse" />
-    <button type="button" data-sipu-interactive="timelapse">play</button>
-    <canvas data-sipu-interactive="timelapse"></canvas>
+    </div>
+    <input type="range" data-sipu-range="timelapse" />
+    <button type="button" data-sipu-stopbutton="timelapse">play</button>
+    <button type="button" data-sipu-playbutton="timelapse">play</button>
+    <canvas data-sipu-canvas="timelapse"></canvas>
   </body>
-  <script type="text/javascript" src="SipuInteractive.js" ></script>
+  <script type="text/javascript" src="SipuSlider.js" ></script>
 
 </html>
