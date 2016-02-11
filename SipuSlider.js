@@ -13,7 +13,6 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 		SetImages: "",
 		CanvasNode: "",
 		ImageListNode: "",
-		ImageListLength: -1,
 		PlayButtonNode: "",
 		StopButtonNode: "",
 		RangeNode: "",
@@ -50,24 +49,19 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 				return true;
 			}
 		},
-		LoadImageCheck: function () {
-			if (this.SetImages.length === this.ImageListLength) {
-				return true;
-			}
-		},
 		init: function () {
 			this.SetNode();
 			if (this.ValidCheck()) {
 				this.ImageListNode.style.display = "none";
 
 				if (this.SetImages.length < 1) {
-					this.SetImages = setImageList(this.ImageListNode, this.ImageListLength);
+					this.SetImages = setImageList(this.ImageListNode);
 				}
-				if(this.LoadImageCheck) {
-					console.dir(this.SetImages);
+					var setV = setCanvas(this.CanvasNode);
+					this.SetCanvasHeight = setV[0];
+					this.SetCanvasWidth = setV[1];
 					setAnimate(this.CanvasNode, this.SetFadeTime);
 					setRangeNode(this.RangeNode, 1, this.SetRangeMax, this.SetImages, this.CanvasNode, this.SetCanvasHeight, this.SetCanvasWidth);
-				}
 			} else {
 				console.log("Failed Build " + this.SetAttrVal);
 			}
@@ -122,7 +116,13 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 		}
 	}
 
-	function setImageList (node, leng) {
+	function setCanvas(node) {
+		var getHeight = node.width || 640;
+		var getWidth = node.height || 480;
+		return [getHeight, getWidth];
+	}
+
+	function setImageList (node) {
 		var img = $(node).find("img");
 		var loadcheck = 0;
 		var loadimage = new Array(img.length);
@@ -134,7 +134,6 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 			};
 			newImg.src = img[index].src;
 		});
-		leng = img.length;
 		return loadimage;
 	}
 
