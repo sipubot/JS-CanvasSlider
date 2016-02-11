@@ -8,6 +8,8 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 		SetAttrVal: "",
 		SetFadeTime: 0.5,
 		SetRangeMax: 255,
+		SetCanvasHeight: 600,
+		SetCanvasWidth: 800,
 		SetImages: "",
 		CanvasNode: "",
 		ImageListNode: "",
@@ -57,13 +59,14 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 			this.SetNode();
 			if (this.ValidCheck()) {
 				this.ImageListNode.style.display = "none";
+
 				if (this.SetImages.length < 1) {
 					this.SetImages = setImageList(this.ImageListNode, this.ImageListLength);
 				}
 				if(this.LoadImageCheck) {
 					console.dir(this.SetImages);
 					setAnimate(this.CanvasNode, this.SetFadeTime);
-					setRangeNode(this.RangeNode, 1, this.SetRangeMax, this.SetImages, this.CanvasNode);
+					setRangeNode(this.RangeNode, 1, this.SetRangeMax, this.SetImages, this.CanvasNode, this.SetCanvasHeight, this.SetCanvasWidth);
 				}
 			} else {
 				console.log("Failed Build " + this.SetAttrVal);
@@ -126,10 +129,8 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 		$.each(img, function (index){
 			var newImg = new Image();
 			newImg.onload = function () {
-
 				loadimage[index] = newImg;
 				loadcheck++;
-				console.log(loadimage[index]);
 			};
 			newImg.src = img[index].src;
 		});
@@ -137,28 +138,29 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 		return loadimage;
 	}
 
-	function setRangeNode(node, min, max, images, canvas) {
+	function setRangeNode(node, min, max, images, canvas, h, w) {
 		node.value = 1;
 		node.setAttribute("min", min);
 		node.setAttribute("max", max);
 		$(node).on("change mousemove input", function () {
-			drawCanvasNode(canvas, min, max, this.value, images);
+			drawCanvasNode(canvas, min, max, this.value, images, h, w);
 		});
 
 	}
 
-	function drawCanvasNode (node, min, max, value, images) {
+	function drawCanvasNode (node, min, max, value, images, h, w) {
 		var context = node.getContext("2d");
+		context.canvas.height = h;
+		context.canvas.width = w;
 		context.imageSmoothingEnabled = !1;
 		context.mozImageSmoothingEnabled = !1;
-		var index = Math.ceil(value /	(max / (images.length)));
-		value = Math.ceil(value / (max / (images.length))) - value / (max / (images.length));
-		context.drawImage(images[index - 1], 0, 0, 960, 640, 0, 0, images[index - 1].width, images[index - 1].height);
-		context.globalAlpha = 1 - value;
-		context.drawImage(images[index], 0, 0, 960, 640, 0, 0, images[index].widthval, images[index].heightval);
-		context.globalAlpha = value;
-
-		console.log(images[index - 1]);
+		var index = Math.ceil(value /	(max / (images.length - 1)));
+		var alphavalue = Math.ceil(value / (max / (images.length - 1))) - value / (max / (images.length - 1));
+		context.drawImage(images[index - 1], 0, 0, images[index - 1].width, images[index - 1].height, 0, 0, w, h);
+		context.globalAlpha = 1 - alphavalue;
+		context.drawImage(images[index], 0, 0, images[index].width, images[index].height, 0, 0, w, h);
+		context.globalAlpha = alphavalue;
+		console.log(images[index - 1].width);
 	}
 
 
