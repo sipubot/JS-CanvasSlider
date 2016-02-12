@@ -43,6 +43,8 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 					setRangeNode(index);
 					setPlayButtonNode(index);
 					setStopButtonNode(index);
+					//first render images
+					drawCanvasNode(SLIDERS[index].CanvasNode, 1, SLIDERS[index].SetRangeMax, 1, SLIDERS[index].SetImages, SLIDERS[index].SetCanvasHeight, SLIDERS[index].SetCanvasWidth);
 				};
 				this.SetImages = loadImages(this.Index, callbackfunc);
 			} else {
