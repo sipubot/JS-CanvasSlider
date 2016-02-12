@@ -37,14 +37,14 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 			this.SetNode();
 			if (this.ValidCheck()) {
 				this.ImageListNode.style.display = "none";
-				if (this.SetImages.length < 1) {
-					this.SetImages = setImageList(this.Index);
-				}
-				setCanvas(this.Index);
-				setAnimate(this.Index);
-				setRangeNode(this.Index);
-				setPlayButtonNode(this.Index);
-				setStopButtonNode(this.Index);
+				var callbackfunc = function (index) {
+					setCanvas(index);
+					setAnimate(index);
+					setRangeNode(index);
+					setPlayButtonNode(index);
+					setStopButtonNode(index);
+				};
+				this.SetImages = loadImages(this.Index, callbackfunc);
 			} else {
 				console.log("Failed Build " + this.SetAttrVal);
 			}
@@ -124,19 +124,23 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 		SLIDERS[index].SetCanvasHeight = SLIDERS[index].CanvasNode.style.height || 480;
 	}
 
-	function setImageList(index) {
+	function loadImages(index, func) {
+		//console.log(index + func);
 		var img = $(SLIDERS[index].ImageListNode).find("img");
 		var loadcheck = 0;
 		var loadimage = new Array(img.length);
-		$.each(img, function (index) {
+		$.each(img, function (i) {
 			var newImg = new Image();
 			newImg.onload = function () {
-				loadimage[index] = newImg;
+				loadimage[i] = newImg;
 				loadcheck++;
+				if (loadcheck === img.length) {
+					SLIDERS[index].SetImages = loadimage;
+					return func(index);
+				}
 			};
-			newImg.src = img[index].src;
+			newImg.src = img[i].src;
 		});
-		return loadimage;
 	}
 
 	function setRangeNode(index) {
