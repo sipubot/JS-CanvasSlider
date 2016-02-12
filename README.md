@@ -3,7 +3,7 @@
 
 ##Use
 - In html Like this!
-- if you want other Slider that use differance attributes name.
+- if you want other Slider that use differance attributes valuename.
 - if you Onload header last on html ``` SIPUSlider.run(); ``` call.
 ```
   <div data-sipu-images="timelapse">
