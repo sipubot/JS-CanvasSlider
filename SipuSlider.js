@@ -3,49 +3,33 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 	//master function
 	var DATANODE = getDataNode();
 	var SLIDERNAME = getSliderName();
+	var SLIDERS = [];
 
 	var Slider = {
+		Index: -1,
 		SetAttrVal: "",
 		SetFadeTime: 0.5,
 		SetRangeMax: 255,
 		SetCanvasHeight: 600,
 		SetCanvasWidth: 800,
+		SetPlayInterval: 50,
 		SetImages: "",
 		CanvasNode: "",
 		ImageListNode: "",
 		PlayButtonNode: "",
 		StopButtonNode: "",
 		RangeNode: "",
-		Valid: 0,
 		OnPlaying: false,
+		OnPlayInterval: "",
 		SetNode: function () {
-			if (this.SetAttrVal.length > 0) {
-				for (var i = 0; i < DATANODE.length; i++) {
-					if (DATANODE[i].getAttribute("data-sipu-canvas") === this.SetAttrVal) {
-						this.CanvasNode = DATANODE[i];
-						this.Valid++;
-					}
-					if (DATANODE[i].getAttribute("data-sipu-images") === this.SetAttrVal) {
-						this.ImageListNode = DATANODE[i];
-						this.Valid++;
-					}
-					if (DATANODE[i].getAttribute("data-sipu-playbutton") === this.SetAttrVal) {
-						this.PlayButtonNode = DATANODE[i];
-						this.Valid++;
-					}
-					if (DATANODE[i].getAttribute("data-sipu-stopbutton") === this.SetAttrVal) {
-						this.StopButtonNode = DATANODE[i];
-						this.Valid++;
-					}
-					if (DATANODE[i].getAttribute("data-sipu-range") === this.SetAttrVal) {
-						this.RangeNode = DATANODE[i];
-						this.Valid++;
-					}
-				}
-			}
+			setNodeSlide(this.Index);
 		},
 		ValidCheck: function () {
-			if (this.Valid === 5) {
+			if (typeof (this.CanvasNode) === "object" &&
+				typeof (this.ImageListNode) === "object" &&
+				typeof (this.PlayButtonNode) === "object" &&
+				typeof (this.StopButtonNode) === "object" &&
+				typeof (this.RangeNode) === "object") {
 				return true;
 			}
 		},
@@ -53,21 +37,18 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 			this.SetNode();
 			if (this.ValidCheck()) {
 				this.ImageListNode.style.display = "none";
-
 				if (this.SetImages.length < 1) {
-					this.SetImages = setImageList(this.ImageListNode);
+					this.SetImages = setImageList(this.Index);
 				}
-					var setV = setCanvas(this.CanvasNode);
-					this.SetCanvasHeight = setV[0];
-					this.SetCanvasWidth = setV[1];
-					setAnimate(this.CanvasNode, this.SetFadeTime);
-					setRangeNode(this.RangeNode, 1, this.SetRangeMax, this.SetImages, this.CanvasNode, this.SetCanvasHeight, this.SetCanvasWidth);
+				setCanvas(this.Index);
+				setAnimate(this.Index);
+				setRangeNode(this.Index);
+				setPlayButtonNode(this.Index);
+				setStopButtonNode(this.Index);
 			} else {
 				console.log("Failed Build " + this.SetAttrVal);
 			}
-
 		}
-
 	};
 
 	function getDataNode() {
@@ -108,25 +89,46 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 	}
 
 	function initSlider() {
-		var sliders = [];
 		for (var i = 0; i < SLIDERNAME.length; i++) {
-			sliders.push(Slider);
-			sliders[i].SetAttrVal = SLIDERNAME[i];
-			sliders[i].init();
+			SLIDERS.push(Slider);
+			SLIDERS[i].SetAttrVal = SLIDERNAME[i];
+			SLIDERS[i].Index = i;
+			SLIDERS[i].init();
 		}
 	}
 
-	function setCanvas(node) {
-		var getHeight = node.width || 640;
-		var getWidth = node.height || 480;
-		return [getHeight, getWidth];
+	function setNodeSlide(index) {
+		if (SLIDERS[index].SetAttrVal.length > 0) {
+			for (var i = 0; i < DATANODE.length; i++) {
+				if (DATANODE[i].getAttribute("data-sipu-canvas") === SLIDERS[index].SetAttrVal) {
+					SLIDERS[index].CanvasNode = DATANODE[i];
+				}
+				if (DATANODE[i].getAttribute("data-sipu-images") === SLIDERS[index].SetAttrVal) {
+					SLIDERS[index].ImageListNode = DATANODE[i];
+				}
+				if (DATANODE[i].getAttribute("data-sipu-playbutton") === SLIDERS[index].SetAttrVal) {
+					SLIDERS[index].PlayButtonNode = DATANODE[i];
+				}
+				if (DATANODE[i].getAttribute("data-sipu-stopbutton") === SLIDERS[index].SetAttrVal) {
+					SLIDERS[index].StopButtonNode = DATANODE[i];
+				}
+				if (DATANODE[i].getAttribute("data-sipu-range") === SLIDERS[index].SetAttrVal) {
+					SLIDERS[index].RangeNode = DATANODE[i];
+				}
+			}
+		}
 	}
 
-	function setImageList (node) {
-		var img = $(node).find("img");
+	function setCanvas(index) {
+		SLIDERS[index].SetCanvasWidth = SLIDERS[index].CanvasNode.style.width || 640;
+		SLIDERS[index].SetCanvasHeight = SLIDERS[index].CanvasNode.style.height || 480;
+	}
+
+	function setImageList(index) {
+		var img = $(SLIDERS[index].ImageListNode).find("img");
 		var loadcheck = 0;
 		var loadimage = new Array(img.length);
-		$.each(img, function (index){
+		$.each(img, function (index) {
 			var newImg = new Image();
 			newImg.onload = function () {
 				loadimage[index] = newImg;
@@ -137,48 +139,61 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 		return loadimage;
 	}
 
-	function setRangeNode(node, min, max, images, canvas, h, w) {
-		node.value = 1;
-		node.setAttribute("min", min);
-		node.setAttribute("max", max);
-		$(node).on("change mousemove input", function () {
-			drawCanvasNode(canvas, min, max, this.value, images, h, w);
+	function setRangeNode(index) {
+		SLIDERS[index].RangeNode.value = 1;
+		SLIDERS[index].RangeNode.setAttribute("min", 1);
+		SLIDERS[index].RangeNode.setAttribute("max", SLIDERS[index].SetRangeMax);
+		$(SLIDERS[index].RangeNode).on("change mousemove input", function () {
+			drawCanvasNode(SLIDERS[index].CanvasNode, 1, SLIDERS[index].SetRangeMax, this.value, SLIDERS[index].SetImages, SLIDERS[index].SetCanvasHeight, SLIDERS[index].SetCanvasWidth);
 		});
 
 	}
 
-	function drawCanvasNode (node, min, max, value, images, h, w) {
+	function drawCanvasNode(node, min, max, value, images, h, w) {
 		var context = node.getContext("2d");
 		context.canvas.height = h;
 		context.canvas.width = w;
 		context.imageSmoothingEnabled = !1;
 		context.mozImageSmoothingEnabled = !1;
-		var index = Math.ceil(value /	(max / (images.length - 1)));
+		var index = Math.ceil(value / (max / (images.length - 1)));
 		var alphavalue = Math.ceil(value / (max / (images.length - 1))) - value / (max / (images.length - 1));
 		context.drawImage(images[index - 1], 0, 0, images[index - 1].width, images[index - 1].height, 0, 0, w, h);
 		context.globalAlpha = 1 - alphavalue;
 		context.drawImage(images[index], 0, 0, images[index].width, images[index].height, 0, 0, w, h);
 		context.globalAlpha = alphavalue;
-		console.log(images[index - 1].width);
 	}
 
 
-	function setPlayButtonNode (node, rangeNode) {
-
+	function setPlayButtonNode(index) {
+		$(SLIDERS[index].PlayButtonNode).click(function () {
+			if (SLIDERS[index].OnPlaying === false) {
+				var rangeval = SLIDERS[index].RangeNode.value;
+				SLIDERS[index].OnPlaying = true;
+				SLIDERS[index].SetPlayInterval = setInterval(function () {
+					SLIDERS[index].RangeNode.value = rangeval;
+					rangeval++;
+					if (rangeval === parseInt(SLIDERS[index].RangeNode.getAttribute("max"))) {
+						rangeval = SLIDERS[index].RangeNode.value;
+						clearInterval(SLIDERS[index].SetPlayInterval);
+						SLIDERS[index].OnPlaying = false;
+					}
+				}, SLIDERS[index].OnPlayInterval || 20);
+			}
+		});
 	}
 
-	function setStopButtonNode (node, rangeNode) {
-
+	function setStopButtonNode(index) {
+		$(SLIDERS[index].StopButtonNode).click(function () {
+			SLIDERS[index].OnPlaying = false;
+			clearInterval(SLIDERS[index].SetPlayInterval);
+		});
 	}
 
-
-
-
-	function setAnimate(node, time) {
-		$(node).css("-webkit-transition", "all " + time + "s ease-in-out");
-		$(node).css("-moz-transition", "all " + time + "s ease-in-out");
-		$(node).css("-o-transition", "all " + time + "s ease-in-out");
-		$(node).css("transition", "all " + time + "s ease-in-out");
+	function setAnimate(index) {
+		$(SLIDERS[index].CanvasNode).css("-webkit-transition", "all " + SLIDERS[index].SetFadeTime + "s ease-in-out");
+		$(SLIDERS[index].CanvasNode).css("-moz-transition", "all " + SLIDERS[index].SetFadeTime + "s ease-in-out");
+		$(SLIDERS[index].CanvasNode).css("-o-transition", "all " + SLIDERS[index].SetFadeTime + "s ease-in-out");
+		$(SLIDERS[index].CanvasNode).css("transition", "all " + SLIDERS[index].SetFadeTime + "s ease-in-out");
 	}
 
 	SIPUSlider.run = function () {
