@@ -1,8 +1,8 @@
 var SIPUSlider = (function (SIPUSlider, $, undefined) {
 	"use strict";
-	//master function
-	var DATANODE = getDataNode();
-	var SLIDERNAME = getSliderName();
+	//main struct
+	var DATANODE;
+	var SLIDERNAME;
 	var SLIDERS = [];
 
 	var Slider = {
@@ -204,6 +204,9 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 	}
 
 	SIPUSlider.run = function () {
+		//master function
+		DATANODE = getDataNode();
+		SLIDERNAME = getSliderName();
 		initSlider();
 	};
 	return SIPUSlider;
