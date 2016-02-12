@@ -172,6 +172,7 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 				SLIDERS[index].SetPlayInterval = setInterval(function () {
 					SLIDERS[index].RangeNode.value = rangeval;
 					rangeval++;
+					drawCanvasNode(SLIDERS[index].CanvasNode, 1, SLIDERS[index].SetRangeMax, rangeval, SLIDERS[index].SetImages, SLIDERS[index].SetCanvasHeight, SLIDERS[index].SetCanvasWidth);
 					if (rangeval === parseInt(SLIDERS[index].RangeNode.getAttribute("max"))) {
 						rangeval = SLIDERS[index].RangeNode.value;
 						clearInterval(SLIDERS[index].SetPlayInterval);

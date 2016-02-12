@@ -1,22 +1,22 @@
 # JS-CanvasSlider
 **Image Rendering slider**
 
-##Installation
-```
- <script src="SipuInteractive.js"></script>
-```
 ##Use
 In html Like this!
+if you want other Slider that use differance attributes name.
 ```
-    <dl SIPU-INTERACTIVE="timelapse">
-       <img src="img/1.png"/>
-       <img src="img/2.png"/>
-       <img src="img/3.png"/>
-       <img src="img/4.png"/>
-    </dl>
-    <input type="range" SIPU-INTERACTIVE="timelapse"/>
-    <button type="button" SIPU-INTERACTIVE="timelapse">play</button>
-    <canvas SIPU-INTERACTIVE="timelapse"></canvas>
+  <div data-sipu-images="timelapse">
+    <img src="img/1.png" />
+    <img src="img/2.png" />
+    <img src="img/3.png" />
+  </div>
+  <input type="range" data-sipu-range="timelapse" />
+  <button type="button" data-sipu-playbutton="timelapse">play</button>
+  <button type="button" data-sipu-stopbutton="timelapse">stop</button>
+  <canvas data-sipu-canvas="timelapse"></canvas>
+
+  <script src="SipuSlider.js"></script>
+
 ```
 ##Example
 http://interactive.hankookilbo.com/v/9f3855acfb184462b219bcdaa2a99097/
