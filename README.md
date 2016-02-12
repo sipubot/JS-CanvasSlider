@@ -2,9 +2,9 @@
 **Image Rendering slider**
 
 ##Use
--In html Like this!
--if you want other Slider that use differance attributes name.
--if you Onload header last on html ``` SIPUSlider.run(); ``` call.
+- In html Like this!
+- if you want other Slider that use differance attributes name.
+- if you Onload header last on html ``` SIPUSlider.run(); ``` call.
 ```
   <div data-sipu-images="timelapse">
     <img src="img/1.png" />
