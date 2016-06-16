@@ -52,7 +52,6 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 			}
 		}
 	};
-
 	function getDataNode() {
 		var temp = [];
 		var node = document.getElementsByTagName("*");
