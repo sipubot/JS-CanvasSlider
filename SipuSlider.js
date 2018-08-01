@@ -121,8 +121,9 @@ var SIPUSlider = (function (SIPUSlider, $, undefined) {
 	}
 
 	function setCanvas(index) {
-		SLIDERS[index].SetCanvasWidth = SLIDERS[index].CanvasNode.style.width || 640;
-		SLIDERS[index].SetCanvasHeight = SLIDERS[index].CanvasNode.style.height || 480;
+		//fix bug
+		SLIDERS[index].CanvasNode.style.width = SLIDERS[index].SetCanvasWidth || 640;
+		SLIDERS[index].CanvasNode.style.height = SLIDERS[index].SetCanvasHeight || 480;
 	}
 
 	function loadImages(index, func) {
